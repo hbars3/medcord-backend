@@ -1,0 +1,42 @@
+version: '3.3'
+
+services:
+  database:
+    image: postgres:13
+    environment:
+      - POSTGRES_DB=notes
+      - POSTGRES_USER=mauricio
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - ./postgres_data:/var/lib/postgresql
+    expose:
+      - "5432"
+    networks:
+      - ensolvers-challenge-network
+
+  backend:
+    container_name: ensolvers-challenge-backend
+    image: ensolvers-challenge-backend:1.0.0
+    links:
+      - database
+    depends_on:
+      - database
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    command: npm run start:dev
+    ports:
+      - 5000:5000
+      - 9229:9229
+      - 8080:8080
+    networks:
+      - ensolvers-challenge-network
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+    external: true
+
+networks:
+  ensolvers-challenge-network:
+    driver: bridge

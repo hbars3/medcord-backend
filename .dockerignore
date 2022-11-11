@@ -1,0 +1,5 @@
+node_modules
+migration
+build
+.vscode
+postgres_data
