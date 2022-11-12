@@ -1,20 +1,14 @@
 import { Test } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { Not, Repository } from 'typeorm';
-import { HttpException, HttpStatus } from '@nestjs/common';
+import { Repository } from 'typeorm';
 import { NoteBodyDto } from '../dto/noteBodyDto.dto';
-import { NoteQueryDto } from '../dto/noteQueryDto.dto';
-import * as mocks from 'node-mocks-http';
 import { NotesService } from '../services/notes.service';
 import { Note } from '../entities/notes.entity';
 
 const noteBodyDto = new NoteBodyDto();
-const noteQueryDto = new NoteQueryDto();
 const oneNote = new Note();
 const secondNote = new Note();
 secondNote.archived = true;
-const archivedNotes = [secondNote, {}];
-const unarchivedNotes = [oneNote, {}];
 const mockRepository = () => ({
   create: jest.fn(),
   delete: jest.fn(),
