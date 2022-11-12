@@ -15,23 +15,22 @@ services:
       - ensolvers-challenge-network
 
   backend:
-    container_name: ensolvers-challenge-backend
-    image: ensolvers-challenge-backend:1.0.0
-    links:
-      - database
-    depends_on:
-      - database
-    build:
-      context: .
-      dockerfile: ./Dockerfile
-    command: npm run start:dev
-    ports:
-      - 5000:5000
-      - 9229:9229
-      - 8080:8080
-    networks:
-      - ensolvers-challenge-network
-    restart: unless-stopped
+      container_name: backend
+      build:
+        context: .
+        target: development
+      volumes:
+        - .:/usr/src/app
+        - /usr/src/app/node_modules
+      ports:
+        - 5000:5000
+        - 9229:9229
+        - 8080:8080
+      command: npm run start:dev
+      networks:
+        - ensolvers-challenge-network
+      depends_on:
+        - database
 
 volumes:
   postgres_data:
