@@ -4,7 +4,6 @@ import { NoteBodyDto } from '../dto/noteBodyDto.dto';
 import { NoteQueryDto } from '../dto/noteQueryDto.dto';
 import * as mocks from 'node-mocks-http';
 import { NotesService } from '../services/notes.service';
-import { Query } from 'typeorm/driver/Query';
 
 describe('Notes Controller', () => {
   let notesController: NotesController;
