@@ -3,7 +3,7 @@
     "host": "postgres",
     "port": 5432,
     "username": "postgres",
-    "password": "test.db.2022",
+    "password": "db.2022",
     "database": "medcord_db",
     "entities": ["src/**/*.entity.ts"],
     "synchronize": false,
