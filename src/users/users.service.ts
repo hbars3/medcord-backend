@@ -42,7 +42,7 @@ export class UsersService {
         await this.usersRepository.save(newUser);
         
         return {
-            msg: "Codigo de verificacion enviado"
+            user: newUser
         }
     }
 }

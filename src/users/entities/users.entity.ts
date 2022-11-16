@@ -51,9 +51,4 @@ export class User {
     })
     permissions: string;
 
-    @Column({
-        default: false
-    })
-    verified: boolean;
-
 }

@@ -3,9 +3,6 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { NotesModule } from './notes/notes.module';
-import { UsersController } from './users/users.controller';
-import { UsersService } from './users/users.service';
 import { UsersModule } from './users/users.module';
 
 @Module({
@@ -29,7 +26,6 @@ import { UsersModule } from './users/users.module';
         retryAttempts: 10
       })
     }),
-    NotesModule,
     UsersModule
   ],
   controllers: [AppController],
