@@ -1,4 +1,4 @@
-import { MaxLength, MinLength } from "class-validator"
+import { IsIn, MaxLength, MinLength } from "class-validator"
 
 export class UserRegisterDto  {
  
@@ -22,15 +22,22 @@ export class UserRegisterDto  {
     @MaxLength(255)
     email: string
 
+    
+    @MinLength(0)
+    @MaxLength(255)
+    password: string
+
     @MinLength(0)
     @MaxLength(255)
     telephone: string
 
     @MinLength(0)
     @MaxLength(255)
+    @IsIn(["MEDIC", "NURSE", "NONE"])
     role: string
 
     @MinLength(0)
     @MaxLength(255)
+    @IsIn(["READER", "EDITOR", "RESTRICTED"])
     permissions: string
 }
