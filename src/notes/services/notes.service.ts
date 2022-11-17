@@ -38,7 +38,7 @@ export class NotesService {
    * @returns The new note that was created.
    */
   async create(body: NoteBodyDto): Promise<Note> {
-    const newNote = await this.notesRepository.create({
+    const newNote = this.notesRepository.create({
       title: body.title,
       description: body.description,
     });
