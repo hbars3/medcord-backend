@@ -6,7 +6,7 @@ import * as mocks from 'node-mocks-http';
 import { AuthService } from '../auth/auth.service';
 import { UsersService } from './users.service';
 
-describe('Notes Controller', () => {
+describe('User Controller', () => {
   let userController: UsersController;
   let userService: UsersService;
   const mockUserService = {

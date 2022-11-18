@@ -5,7 +5,7 @@ const payload = {
   email: email,
 };
 
-describe('UserService', () => {
+describe('JWT Strategy Service', () => {
   let jwtStrategy: JwtStrategy;
   beforeEach(async () => {
     const module = await Test.createTestingModule({
