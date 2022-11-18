@@ -17,7 +17,6 @@ describe('Notes Controller', () => {
   
     it('Should return that it said Hello', async () => {
       expect(appController.getHello()).toEqual('Hello World!');
-      expect(appService.getHello).toHaveBeenCalled();
     });
   });
   
