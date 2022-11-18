@@ -2,9 +2,8 @@ import { Test } from '@nestjs/testing';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
-describe('Notes Controller', () => {
+describe('App Controller', () => {
     let appController: AppController;
-    let appService: AppService;
     beforeEach(async () => {
       const moduleRef = await Test.createTestingModule({
         controllers: [AppController],
@@ -12,7 +11,6 @@ describe('Notes Controller', () => {
       })
         .compile();
       appController = moduleRef.get<AppController>(AppController);
-      appService = moduleRef.get<AppService>(AppService);
     });
   
     it('Should return that it said Hello', async () => {

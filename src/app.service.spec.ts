@@ -1,6 +1,6 @@
 import { Test } from '@nestjs/testing';
 import { AppService } from './app.service';
-describe('UserService', () => {
+describe('AppService', () => {
   let appService: AppService;
   beforeEach(async () => {
     const module = await Test.createTestingModule({
