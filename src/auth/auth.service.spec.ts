@@ -1,18 +1,30 @@
+import { JwtService } from '@nestjs/jwt';
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthService } from './auth.service';
-
+import { UserLoginDto } from '../users/dto/userLoginDto.dto';
+const userLoginDto = new UserLoginDto();
+const token = 'access_token';
+const access_token = {
+  access_token: token,
+};
 describe('AuthService', () => {
-  let service: AuthService;
-
+  let authService: AuthService;
+  let jwtService: JwtService;
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [AuthService],
+      providers: [AuthService, JwtService],
     }).compile();
 
-    service = module.get<AuthService>(AuthService);
+    authService = module.get<AuthService>(AuthService);
+    jwtService = module.get<JwtService>(JwtService);
   });
 
-  it('should be defined', () => {
-    expect(service).toBeDefined();
+  it('Should be defined', () => {
+    expect(authService).toBeDefined();
+  });
+  it('Should return that it returned the access token ', async () => {
+    const spy = jest.spyOn(jwtService, 'sign').mockReturnValue(token);
+    expect(await authService.getJWT(userLoginDto)).toEqual(access_token);
+    expect(spy).toBeCalledTimes(1);
   });
 });
