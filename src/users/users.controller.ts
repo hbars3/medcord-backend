@@ -12,9 +12,9 @@ import {
 import { UsersService } from './users.service';
 import { Response } from 'express';
 import { UserRegisterDto } from './dto/userRegisterDto.dto';
-import { AuthService } from 'src/auth/auth.service';
+import { AuthService } from '../auth/auth.service';
 import { UserLoginDto } from './dto/userLoginDto.dto';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
 @Controller('users')
 export class UsersController {

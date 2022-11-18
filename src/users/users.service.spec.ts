@@ -4,9 +4,10 @@ import { Repository } from 'typeorm';
 import { UserRegisterDto } from './dto/userRegisterDto.dto';
 import { UsersService } from './users.service';
 import { User } from './entities/users.entity';
-
+import * as bcrypt from 'bcrypt';
 const userRegisterDto = new UserRegisterDto();
 const user = new User();
+const email = 'example@xyz.com';
 const mockRepository = () => ({
   create: jest.fn(),
   findOne: jest.fn(),
@@ -19,7 +20,6 @@ type MockRepository<T = any> = Partial<
 describe('UserService', () => {
   let userService: UsersService;
   let userRepository: MockRepository<User>;
-
   beforeEach(async () => {
     const module = await Test.createTestingModule({
       providers: [
@@ -39,25 +39,68 @@ describe('UserService', () => {
   });
   it('Should return that the user already exists', async () => {
     userRepository.findOne.mockResolvedValue(user);
-    expect(await userService.isAlreadyRegistered('example@abc.com')).toEqual(
-      true,
-    );
+    expect(await userService.isAlreadyRegistered(email)).toEqual(true);
     expect(userRepository.findOne).toBeCalledTimes(1);
   });
   it('Should return that the user does not exists', async () => {
     userRepository.findOne.mockResolvedValue(undefined);
-    expect(await userService.isAlreadyRegistered('example@xyz.com')).toEqual(
-      false,
-    );
+    expect(await userService.isAlreadyRegistered(email)).toEqual(false);
     expect(userRepository.findOne).toBeCalledTimes(1);
   });
   it('Should return that it registered the user', async () => {
-    userRepository.create.mockResolvedValue(user);
+    jest.spyOn(bcrypt, 'genSalt').mockReturnThis();
+    jest.spyOn(bcrypt, 'hash').mockReturnThis();
+    userRepository.create.mockReturnValue(user);
     userRepository.save.mockReturnThis();
     expect(await userService.register(userRegisterDto)).toEqual({
-      msg: 'Codigo de verificacion enviado',
+      user: user,
     });
     expect(userRepository.create).toBeCalledTimes(1);
     expect(userRepository.save).toBeCalledTimes(1);
+  });
+  it('Should return that the user does not exists', async () => {
+    jest.spyOn(userService, 'getByEmail').mockResolvedValue(undefined);
+    expect(await userService.isValid(email, 'password')).toBeFalsy();
+    expect(userService.getByEmail).toHaveBeenCalled();
+  });
+  it('Should return that the credentials were not valid', async () => {
+    jest.spyOn(userService, 'getByEmail').mockResolvedValue(user);
+    jest.spyOn(bcrypt, 'compareSync').mockReturnValue(false);
+    expect(await userService.isValid(email, 'password')).toBeFalsy();
+    expect(userService.getByEmail).toHaveBeenCalled();
+  });
+  it('Should return that the credentials were valid', async () => {
+    jest.spyOn(userService, 'getByEmail').mockResolvedValue(user);
+    jest.spyOn(bcrypt, 'compareSync').mockReturnValue(true);
+    expect(await userService.isValid(email, 'password')).toBeTruthy();
+    expect(userService.getByEmail).toHaveBeenCalled();
+  });
+  it('Should return that the user was found by email', async () => {
+    userRepository.findOne.mockResolvedValue(user);
+    expect(await userService.getByEmail(email)).toEqual(user);
+    expect(userRepository.findOne).toHaveBeenCalled();
+  });
+  it('Should return that the user was not found by email', async () => {
+    userRepository.findOne.mockResolvedValue(undefined);
+    expect(await userService.getByEmail(email)).toEqual(undefined);
+    expect(userRepository.findOne).toHaveBeenCalled();
+  });
+  it('Should return that it encrypted the password', async () => {
+    jest.spyOn(bcrypt, 'genSalt').mockReturnThis();
+    jest.spyOn(bcrypt, 'hash').mockImplementationOnce((pass, salt) => {
+      return 'password';
+    });
+    expect(await userService.encryptPassword('password')).toEqual('password');
+    expect(bcrypt.genSalt).toHaveBeenCalled();
+    expect(bcrypt.hash).toHaveBeenCalled();
+  });
+  it('Should return that it did not encryp the password', async () => {
+    jest.spyOn(bcrypt, 'genSalt').mockReturnThis();
+    jest.spyOn(bcrypt, 'hash').mockImplementationOnce((pass, salt) => {
+      return undefined;
+    });
+    expect(await userService.encryptPassword('password')).toEqual(undefined);
+    expect(bcrypt.genSalt).toHaveBeenCalled();
+    expect(bcrypt.hash).toHaveBeenCalled();
   });
 });
