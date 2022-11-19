@@ -41,6 +41,7 @@ export class UsersService {
 
     await this.usersRepository.save(newUser);
 
+    delete newUser.password;
     return {
       user: newUser,
     };
@@ -60,10 +61,17 @@ export class UsersService {
     return true;
   }
 
-  async getByEmail(email: string) {
-    return await this.usersRepository.findOne({
-      where: { email },
+  async getByEmail(email: string, withPassword: boolean = true) {
+
+    const user: User = await this.usersRepository.findOne({
+      where: { email }
     });
+
+    if (!withPassword) {
+      delete user.password;
+    }
+
+    return user;
   }
 
   async encryptPassword(password: string): Promise<string> {

@@ -9,10 +9,8 @@ export class AuthService {
 
   constructor() {}
 
-  async getJWT(user: UserLoginDto) {
+  async getJWT(user: UserLoginDto): Promise<string> {
     const payload = { email: user.email };
-    return {
-      access_token: this.jwtService.sign(payload),
-    };
+    return this.jwtService.sign(payload);
   }
 }
