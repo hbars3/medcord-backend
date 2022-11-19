@@ -16,6 +16,7 @@ import { AuthService } from '../auth/auth.service';
 import { UserLoginDto } from './dto/userLoginDto.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { ApiTags } from '@nestjs/swagger';
+import { User } from './entities/users.entity';
 
 @Controller('users')
 @ApiTags('User Management')
@@ -55,8 +56,13 @@ export class UsersController {
         });
       }
 
-      const jwt = await this.authService.getJWT(body);
-      return res.status(HttpStatus.OK).json(jwt);
+      const user: User = await this.usersService.getByEmail(body.email, false);
+
+      const jwt: string = await this.authService.getJWT(body);
+      return res.status(HttpStatus.OK).json({
+        "access_token": jwt,
+        "user": user
+      });
     } catch (error) {
       return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
         msg: 'No se pudo loguear al usuario',
