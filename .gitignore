@@ -9,3 +9,4 @@ src/database
 coverage/
 .vs/
 .scannerwork/
+.devcontainer
