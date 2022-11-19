@@ -15,8 +15,10 @@ import { UserRegisterDto } from './dto/userRegisterDto.dto';
 import { AuthService } from '../auth/auth.service';
 import { UserLoginDto } from './dto/userLoginDto.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { ApiTags } from '@nestjs/swagger';
 
 @Controller('users')
+@ApiTags('User Management')
 export class UsersController {
   @Inject(AuthService)
   private authService: AuthService;
