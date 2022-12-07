@@ -27,7 +27,8 @@ export class User {
     dni: string;
 
     @Column({
-        default: ''
+        default: '',
+        unique: true
     })
     email: string;
 

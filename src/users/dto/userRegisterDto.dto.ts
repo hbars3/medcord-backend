@@ -1,6 +1,7 @@
 import { IsIn, MaxLength, MinLength } from "class-validator"
+import { baseUserDto } from "./baseUserDto"
 
-export class UserRegisterDto  {
+export class UserRegisterDto extends baseUserDto {
  
     @MinLength(0)
     @MaxLength(255)
@@ -17,15 +18,6 @@ export class UserRegisterDto  {
     @MinLength(0)
     @MaxLength(255)
     dni: string
-
-    @MinLength(0)
-    @MaxLength(255)
-    email: string
-
-    
-    @MinLength(0)
-    @MaxLength(255)
-    password: string
 
     @MinLength(0)
     @MaxLength(255)

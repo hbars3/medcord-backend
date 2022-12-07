@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { UserRegisterDto } from './dto/userRegisterDto.dto';
 import { User } from './entities/users.entity';
 import * as bcrypt from 'bcrypt';
+import { UserUpdateDto } from './dto/userUpdateDto.dto';
 
 @Injectable()
 export class UsersService {
@@ -61,7 +62,7 @@ export class UsersService {
     return true;
   }
 
-  async getByEmail(email: string, withPassword: boolean = true) {
+  async getByEmail(email: string, withPassword: boolean = true): Promise<User> {
 
     const user: User = await this.usersRepository.findOne({
       where: { email }
@@ -72,6 +73,35 @@ export class UsersService {
     }
 
     return user;
+  }
+
+  async update(email: string, body: UserUpdateDto): Promise<User> {
+
+    console.log(email);
+    console.log(body);
+
+    const updateEntity = {}
+
+    if (body.email != undefined) {
+      updateEntity["email"] = body.email;
+    }
+
+    if (body.password != undefined) {
+      updateEntity["password"] = this.encryptPassword(body.password);
+    }
+
+    if (body.telephone != undefined) {
+      updateEntity["telephone"] = body.telephone;
+    }
+
+    await this.usersRepository.update(
+      {email},
+      updateEntity
+    );
+
+    const user: User = await this.getByEmail(body.email, false);
+    return user;
+
   }
 
   async encryptPassword(password: string): Promise<string> {
