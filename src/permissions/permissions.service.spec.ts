@@ -8,7 +8,6 @@ import { PermissionsService } from './permissions.service';
 describe('PermissionsService', () => {
   const id = 1;
   const permission = new Permission();
-  permission.createdAt = 'a';
   const permissionDto = new PermissionDto();
   
   const mockRepository = () => ({
