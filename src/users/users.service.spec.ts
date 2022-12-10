@@ -1,17 +1,21 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
+import * as dotenv from 'dotenv';
 import { Repository } from 'typeorm';
 import { UserRegisterDto } from './dto/userRegisterDto.dto';
 import { UserUpdateDto } from './dto/userUpdateDto.dto';
 import { User } from './entities/users.entity';
 import { UsersService } from './users.service';
 
+dotenv.config();
+
 describe('UserService', () => {
   const userRegisterDto = new UserRegisterDto();
   const userUpdateDto = new UserUpdateDto();
-  const email = 'example@xyz.com';
   const user = new User();
+  const email = 'example@xyz.com';
+  const password = process.env.TEST_PASSWORD;
   const telephone = '1234567';
 
   const mockRepository = () => ({
@@ -71,19 +75,19 @@ describe('UserService', () => {
 
   it('Should return that the user does not exists', async () => {
     jest.spyOn(userService, 'getByEmail').mockResolvedValue(undefined);
-    expect(await userService.isValid(email, 'password')).toBeFalsy();
+    expect(await userService.isValid(email, password)).toBeFalsy();
     expect(userService.getByEmail).toHaveBeenCalled();
   });
   it('Should return that the credentials were not valid', async () => {
     jest.spyOn(userService, 'getByEmail').mockResolvedValue(user);
     jest.spyOn(bcrypt, 'compareSync').mockReturnValue(false);
-    expect(await userService.isValid(email, 'password')).toBeFalsy();
+    expect(await userService.isValid(email, password)).toBeFalsy();
     expect(userService.getByEmail).toHaveBeenCalled();
   });
   it('Should return that the credentials were valid', async () => {
     jest.spyOn(userService, 'getByEmail').mockResolvedValue(user);
     jest.spyOn(bcrypt, 'compareSync').mockReturnValue(true);
-    expect(await userService.isValid(email, 'password')).toBeTruthy();
+    expect(await userService.isValid(email, password)).toBeTruthy();
     expect(userService.getByEmail).toHaveBeenCalled();
   });
 
@@ -110,7 +114,7 @@ describe('UserService', () => {
   });
   it('Should return that the user was updated successfully with any changes', async () => {
     userUpdateDto.email = email;
-    userUpdateDto.password = 'password';
+    userUpdateDto.password = password;
     userUpdateDto.telephone = telephone;
     userRepository.update.mockReturnThis();
     jest.spyOn(userService, 'getByEmail').mockResolvedValue(user);
@@ -122,7 +126,7 @@ describe('UserService', () => {
     jest.spyOn(bcrypt, 'hash').mockImplementationOnce(() => {
       return 'password';
     });
-    expect(await userService.encryptPassword('password')).toEqual('password');
+    expect(await userService.encryptPassword(password)).toEqual('password');
     expect(bcrypt.genSalt).toHaveBeenCalled();
     expect(bcrypt.hash).toHaveBeenCalled();
   });
@@ -131,7 +135,7 @@ describe('UserService', () => {
     jest.spyOn(bcrypt, 'hash').mockImplementationOnce(() => {
       return undefined;
     });
-    expect(await userService.encryptPassword('password')).toEqual(undefined);
+    expect(await userService.encryptPassword(password)).toEqual(undefined);
     expect(bcrypt.genSalt).toHaveBeenCalled();
     expect(bcrypt.hash).toHaveBeenCalled();
   });
