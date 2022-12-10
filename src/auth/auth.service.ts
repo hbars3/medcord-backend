@@ -7,8 +7,6 @@ export class AuthService {
   @Inject(JwtService)
   private jwtService: JwtService;
 
-  constructor() {}
-
   async getJWT(user: UserLoginDto): Promise<string> {
     const payload = { email: user.email };
     return this.jwtService.sign(payload);
