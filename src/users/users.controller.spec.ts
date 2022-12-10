@@ -1,6 +1,7 @@
-import { Test } from '@nestjs/testing';
+import { Test, TestingModule } from '@nestjs/testing';
 import * as mocks from 'node-mocks-http';
 import { AuthService } from '../auth/auth.service';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { UserLoginDto } from './dto/userLoginDto.dto';
 import { UserRegisterDto } from './dto/userRegisterDto.dto';
 import { UserUpdateDto } from './dto/userUpdateDto.dto';
@@ -31,7 +32,7 @@ describe('User Controller', () => {
     access_token: 'test',
   };
   beforeEach(async () => {
-    const moduleRef = await Test.createTestingModule({
+    const moduleRef: TestingModule = await Test.createTestingModule({
       controllers: [UsersController],
       providers: [UsersService, AuthService],
     })
@@ -43,6 +44,11 @@ describe('User Controller', () => {
     userController = moduleRef.get<UsersController>(UsersController);
     userService = moduleRef.get<UsersService>(UsersService);
   });
+  
+  it('Should be defined', () => {
+    expect(userController).toBeDefined();
+  });
+
   it('Should return that it registered the user', async () => {
     mockUserService.isAlreadyRegistered.mockReturnValue(false);
     mockUserService.register.mockReturnValue(
@@ -90,9 +96,19 @@ describe('User Controller', () => {
     expect(response.statusCode).toEqual(500);
     expect(mockUserService.isValid).toBeCalledTimes(3);
   });
+
+  it('Should ensure the JwtAuthGuard is applied to the getProfile method', async () => {
+    const getUserGuard = Reflect.getMetadata('__guards__', UsersController.prototype.getProfile)
+    expect(new (getUserGuard[0])).toBeInstanceOf(JwtAuthGuard)
+  });
   it('Should return that the getProfile method executed successfully', async () => {
     const response = await userController.getProfile(req);
     expect(response).toEqual(req.user);
+  });
+
+  it('Should ensure the JwtAuthGuard is applied to the updateUser method', async () => {
+    const updateUserGuard = Reflect.getMetadata('__guards__', UsersController.prototype.updateUser)
+    expect(new (updateUserGuard[0])).toBeInstanceOf(JwtAuthGuard)
   });
   it('Should return that it did not update the user', async () => {
     mockUserService.isAlreadyRegistered.mockReturnValue(true);
@@ -102,8 +118,8 @@ describe('User Controller', () => {
   });
   it('Should return that it updated the user ', async () => {
     req.user = {
-      email: 'example@gmail.com'
-    }
+      email: 'example@gmail.com',
+    };
     mockUserService.isAlreadyRegistered.mockReturnValue(false);
     mockUserService.update.mockReturnValue(user);
     const response = await userController.updateUser(req, res, userUpdateDto);
