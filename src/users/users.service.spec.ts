@@ -1,32 +1,35 @@
-import { Test } from '@nestjs/testing';
+import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
+import * as bcrypt from 'bcrypt';
 import { Repository } from 'typeorm';
 import { UserRegisterDto } from './dto/userRegisterDto.dto';
 import { UserUpdateDto } from './dto/userUpdateDto.dto';
-import { UsersService } from './users.service';
 import { User } from './entities/users.entity';
-import * as bcrypt from 'bcrypt';
-const userRegisterDto = new UserRegisterDto();
-const userUpdateDto = new UserUpdateDto();
-const email = 'example@xyz.com';
-const user = new User();
-const password = 'password';
-const telephone = '1234567';
-const mockRepository = () => ({
-  create: jest.fn(),
-  findOne: jest.fn(),
-  save: jest.fn(),
-  update: jest.fn(),
-});
-type MockRepository<T = any> = Partial<
-  Record<keyof Repository<User>, jest.Mock>
->;
+import { UsersService } from './users.service';
 
 describe('UserService', () => {
+  const userRegisterDto = new UserRegisterDto();
+  const userUpdateDto = new UserUpdateDto();
+  const email = 'example@xyz.com';
+  const user = new User();
+  const password = 'password';
+  const telephone = '1234567';
+
+  const mockRepository = () => ({
+    create: jest.fn(),
+    findOne: jest.fn(),
+    save: jest.fn(),
+    update: jest.fn(),
+  });
+  type MockRepository<User> = Partial<
+    Record<keyof Repository<User>, jest.Mock>
+  >;
+
   let userService: UsersService;
   let userRepository: MockRepository<User>;
+
   beforeEach(async () => {
-    const module = await Test.createTestingModule({
+    const module: TestingModule = await Test.createTestingModule({
       providers: [
         UsersService,
         {
@@ -35,6 +38,7 @@ describe('UserService', () => {
         },
       ],
     }).compile();
+
     userService = module.get<UsersService>(UsersService);
     userRepository = module.get(getRepositoryToken(User));
   });
@@ -42,6 +46,7 @@ describe('UserService', () => {
   it('Should be defined', () => {
     expect(userService).toBeDefined();
   });
+
   it('Should return that the user already exists', async () => {
     userRepository.findOne.mockResolvedValue(user);
     expect(await userService.isAlreadyRegistered(email)).toEqual(true);
@@ -52,6 +57,7 @@ describe('UserService', () => {
     expect(await userService.isAlreadyRegistered(email)).toEqual(false);
     expect(userRepository.findOne).toBeCalledTimes(1);
   });
+
   it('Should return that it registered the user', async () => {
     jest.spyOn(bcrypt, 'genSalt').mockReturnThis();
     jest.spyOn(bcrypt, 'hash').mockReturnThis();
@@ -63,6 +69,7 @@ describe('UserService', () => {
     expect(userRepository.create).toBeCalledTimes(1);
     expect(userRepository.save).toBeCalledTimes(1);
   });
+
   it('Should return that the user does not exists', async () => {
     jest.spyOn(userService, 'getByEmail').mockResolvedValue(undefined);
     expect(await userService.isValid(email, 'password')).toBeFalsy();
@@ -80,6 +87,7 @@ describe('UserService', () => {
     expect(await userService.isValid(email, 'password')).toBeTruthy();
     expect(userService.getByEmail).toHaveBeenCalled();
   });
+
   it('Should return that the user was found by email', async () => {
     userRepository.findOne.mockResolvedValue(user);
     expect(await userService.getByEmail(email)).toEqual(user);
@@ -95,6 +103,7 @@ describe('UserService', () => {
     expect(await userService.getByEmail(email, false)).toEqual(user);
     expect(userRepository.findOne).toHaveBeenCalled();
   });
+
   it('Should return that the user was updated successfully without any changes', async () => {
     userRepository.update.mockReturnThis();
     jest.spyOn(userService, 'getByEmail').mockResolvedValue(user);
@@ -108,9 +117,10 @@ describe('UserService', () => {
     jest.spyOn(userService, 'getByEmail').mockResolvedValue(user);
     expect(await userService.update(email, userUpdateDto)).toEqual(user);
   });
+  
   it('Should return that it encrypted the password', async () => {
     jest.spyOn(bcrypt, 'genSalt').mockReturnThis();
-    jest.spyOn(bcrypt, 'hash').mockImplementationOnce((pass, salt) => {
+    jest.spyOn(bcrypt, 'hash').mockImplementationOnce(() => {
       return password;
     });
     expect(await userService.encryptPassword(password)).toEqual(password);
@@ -119,7 +129,7 @@ describe('UserService', () => {
   });
   it('Should return that it did not encrypt the password', async () => {
     jest.spyOn(bcrypt, 'genSalt').mockReturnThis();
-    jest.spyOn(bcrypt, 'hash').mockImplementationOnce((pass, salt) => {
+    jest.spyOn(bcrypt, 'hash').mockImplementationOnce(() => {
       return undefined;
     });
     expect(await userService.encryptPassword(password)).toEqual(undefined);
