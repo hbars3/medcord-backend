@@ -1,7 +1,7 @@
 import { IsIn, MaxLength, MinLength } from "class-validator"
-import { baseUserDto } from "./baseUserDto"
+import { BaseUserDto } from "./baseUserDto"
 
-export class UserRegisterDto extends baseUserDto {
+export class UserRegisterDto extends BaseUserDto {
  
     @MinLength(0)
     @MaxLength(255)
