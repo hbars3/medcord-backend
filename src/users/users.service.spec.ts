@@ -2,16 +2,21 @@ import { Test } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UserRegisterDto } from './dto/userRegisterDto.dto';
+import { UserUpdateDto } from './dto/userUpdateDto.dto';
 import { UsersService } from './users.service';
 import { User } from './entities/users.entity';
 import * as bcrypt from 'bcrypt';
 const userRegisterDto = new UserRegisterDto();
-const user = new User();
+const userUpdateDto = new UserUpdateDto();
 const email = 'example@xyz.com';
+const user = new User();
+const password = 'password';
+const telephone = '1234567';
 const mockRepository = () => ({
   create: jest.fn(),
   findOne: jest.fn(),
   save: jest.fn(),
+  update: jest.fn(),
 });
 type MockRepository<T = any> = Partial<
   Record<keyof Repository<User>, jest.Mock>
@@ -85,21 +90,39 @@ describe('UserService', () => {
     expect(await userService.getByEmail(email)).toEqual(undefined);
     expect(userRepository.findOne).toHaveBeenCalled();
   });
+  it('Should return that the user was found by email and it did not have password', async () => {
+    userRepository.findOne.mockResolvedValue(user);
+    expect(await userService.getByEmail(email, false)).toEqual(user);
+    expect(userRepository.findOne).toHaveBeenCalled();
+  });
+  it('Should return that the user was updated successfully without any changes', async () => {
+    userRepository.update.mockReturnThis();
+    jest.spyOn(userService, 'getByEmail').mockResolvedValue(user);
+    expect(await userService.update(email, userUpdateDto)).toEqual(user);
+  });
+  it('Should return that the user was updated successfully with any changes', async () => {
+    userUpdateDto.email = email;
+    userUpdateDto.password = password;
+    userUpdateDto.telephone = telephone;
+    userRepository.update.mockReturnThis();
+    jest.spyOn(userService, 'getByEmail').mockResolvedValue(user);
+    expect(await userService.update(email, userUpdateDto)).toEqual(user);
+  });
   it('Should return that it encrypted the password', async () => {
     jest.spyOn(bcrypt, 'genSalt').mockReturnThis();
     jest.spyOn(bcrypt, 'hash').mockImplementationOnce((pass, salt) => {
-      return 'password';
+      return password;
     });
-    expect(await userService.encryptPassword('password')).toEqual('password');
+    expect(await userService.encryptPassword(password)).toEqual(password);
     expect(bcrypt.genSalt).toHaveBeenCalled();
     expect(bcrypt.hash).toHaveBeenCalled();
   });
-  it('Should return that it did not encryp the password', async () => {
+  it('Should return that it did not encrypt the password', async () => {
     jest.spyOn(bcrypt, 'genSalt').mockReturnThis();
     jest.spyOn(bcrypt, 'hash').mockImplementationOnce((pass, salt) => {
       return undefined;
     });
-    expect(await userService.encryptPassword('password')).toEqual(undefined);
+    expect(await userService.encryptPassword(password)).toEqual(undefined);
     expect(bcrypt.genSalt).toHaveBeenCalled();
     expect(bcrypt.hash).toHaveBeenCalled();
   });
