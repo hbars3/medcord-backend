@@ -6,6 +6,7 @@ import { AppService } from './app.service';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { PermissionsModule } from './permissions/permissions.module';
+import { MedicalRecordModule } from './medical-record/medical-record.module';
 
 @Module({
   imports: [
@@ -30,7 +31,8 @@ import { PermissionsModule } from './permissions/permissions.module';
     }),
     UsersModule,
     AuthModule,
-    PermissionsModule
+    PermissionsModule,
+    MedicalRecordModule
   ],
   controllers: [AppController],
   providers: [AppService],
