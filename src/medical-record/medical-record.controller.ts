@@ -1,7 +1,6 @@
-import { Body, Controller, HttpStatus, Inject, Post, Res, UseGuards } from '@nestjs/common';
+import { Body, Controller, HttpStatus, Post, Res, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
-import { AuthService } from 'src/auth/auth.service';
 import { MedicalRecordService } from './medical-record.service';
 import { MedicalRecordRegisterDto } from './dto/medicalRecordRegisterDto.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';

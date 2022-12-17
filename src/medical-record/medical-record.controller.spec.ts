@@ -7,7 +7,6 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
 describe('MedicalRecordController', () => {
   let medicalRecordController: MedicalRecordController;
-  let medicalRecordService: MedicalRecordService;
   const mockMedicalRecordService = {
     create: jest.fn(),
   };
@@ -23,7 +22,6 @@ describe('MedicalRecordController', () => {
     .compile();
 
     medicalRecordController = moduleRef.get<MedicalRecordController>(MedicalRecordController);
-    medicalRecordService = moduleRef.get<MedicalRecordService>(MedicalRecordService);
   });
 
   it('Should be defined', () => {
