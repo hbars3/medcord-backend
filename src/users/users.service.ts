@@ -14,13 +14,7 @@ export class UsersService {
 
   async isAlreadyRegistered(email: string) {
     const user = await this.usersRepository.findOne(
-      {
-        email,
-      },
-      {
-        select: ['id'],
-      },
-    );
+      { email },{ select: ['id'] });
     return !!user;
   }
 
@@ -36,41 +30,28 @@ export class UsersService {
       gender: body.gender,
       password: passwordHash,
       role: body.role,
-      telephone: body.telephone,
-      permissions: body.permissions,
+      telephone: body.telephone
     });
 
     await this.usersRepository.save(newUser);
-
     delete newUser.password;
-    return {
-      user: newUser,
-    };
+
+    return { user: newUser };
   }
 
   async isValid(email: string, password: string): Promise<boolean> {
     const user: User = await this.getByEmail(email);
+    if (user == null) { return false }
 
-    if (user == null) {
-      return false;
-    }
-
-    if (!bcrypt.compareSync(password, user.password)) {
-      return false;
-    }
-
-    return true;
+    return bcrypt.compareSync(password, user.password);
   }
 
   async getByEmail(email: string, withPassword: boolean = true): Promise<User> {
 
     const user: User = await this.usersRepository.findOne({
-      where: { email }
-    });
+      where: { email } });
 
-    if (!withPassword) {
-      delete user.password;
-    }
+    if (!withPassword) { delete user.password }
 
     return user;
   }
@@ -101,7 +82,6 @@ export class UsersService {
 
     const user: User = await this.getByEmail(body.email, false);
     return user;
-
   }
 
   async encryptPassword(password: string): Promise<string> {
