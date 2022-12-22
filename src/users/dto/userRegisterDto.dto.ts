@@ -27,9 +27,4 @@ export class UserRegisterDto extends BaseUserDto {
     @MaxLength(255)
     @IsIn(["MEDIC", "NURSE", "NONE"])
     role: string
-
-    @MinLength(0)
-    @MaxLength(255)
-    @IsIn(["READER", "EDITOR", "RESTRICTED"])
-    permissions: string
 }
