@@ -3,7 +3,11 @@ import { IsDateString, IsIn, MaxLength, MinLength } from 'class-validator';
 export class MedicalRecordRegisterDto {
   @MinLength(0)
   @MaxLength(255)
-  completeName: string;
+  firstName: string;
+
+  @MinLength(0)
+  @MaxLength(255)
+  lastName: string;
 
   @MinLength(0)
   @MaxLength(12)

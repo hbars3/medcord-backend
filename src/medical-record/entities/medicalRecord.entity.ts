@@ -6,7 +6,10 @@ export class MedicalRecord {
   id: number;
 
   @Column()
-  completeName: string;
+  firstName: string;
+
+  @Column()
+  lastName: string;
 
   @Column({
     length: 12,
