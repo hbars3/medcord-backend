@@ -16,7 +16,7 @@ import { UserRegisterDto } from './dto/userRegisterDto.dto';
 import { AuthService } from '../auth/auth.service';
 import { UserLoginDto } from './dto/userLoginDto.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { User } from './entities/users.entity';
 import { UserUpdateDto } from './dto/userUpdateDto.dto';
 
@@ -75,12 +75,14 @@ export class UsersController {
 
   //Test endpoint
   @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth('access-token')
   @Get('profile')
   getProfile(@Request() req) {
     return req.user;
   }
 
   @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth('access-token')
   @Put()
   async updateUser(
     @Request() req,

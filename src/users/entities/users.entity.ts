@@ -46,10 +46,4 @@ export class User {
         default: ''
     })
     role: string;
-
-    @Column({
-        default: ''
-    })
-    permissions: string;
-
 }

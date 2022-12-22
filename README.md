@@ -16,3 +16,18 @@ docker compose build medcord-backend
 ```
 docker compose up -d
 ```
+
+#### Ingresar al bash del contenedor backend
+```
+docker exec -it medcord-backend /bin/sh
+```
+
+#### Generar migración
+```
+npm run migrations:generate -- migration
+```
+
+#### Correr migración
+```
+npm run migrations:run
+```
