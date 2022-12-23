@@ -17,7 +17,7 @@ export class User {
     lastname: string;
 
     @Column({
-        default: ''
+        enum: ['Hombre', 'Mujer', 'Otro'],
     })
     gender: string;
 

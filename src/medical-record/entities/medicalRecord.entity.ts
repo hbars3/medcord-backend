@@ -25,12 +25,12 @@ export class MedicalRecord {
   birthdate: Date;
 
   @Column({
-    enum: ['Peruvian', 'Venezuelan', 'Other'],
+    enum: ['Peruano', 'Venezolano', 'Otro'],
   })
   nationality: string;
 
   @Column({
-    enum: ['Male', 'Female', 'Other'],
+    enum: ['Hombre', 'Mujer', 'Otro'],
   })
   gender: string;
 

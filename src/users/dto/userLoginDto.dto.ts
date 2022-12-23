@@ -1,3 +1,11 @@
-import { BaseUserDto } from "./baseUserDto";
+import { MaxLength, MinLength } from "class-validator";
 
-export class UserLoginDto extends BaseUserDto {}
+export class UserLoginDto {
+    @MinLength(0)
+    @MaxLength(255)
+    email: string
+
+    @MinLength(0)
+    @MaxLength(255)
+    password: string
+}
