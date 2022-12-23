@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
-import { PermissionDto } from './dto/permission.dto';
+import { PermissionDto } from './dto/permissionDto.dto';
 import { Permission } from './entities/permissions.entity';
 import { PermissionsService } from './permissions.service';
 

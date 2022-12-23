@@ -13,9 +13,8 @@ async function bootstrap() {
 
   const config = new DocumentBuilder()
     .setTitle('MEDCORD Apis Open API')
-    .setDescription('The cats API description')
+    .setDescription('This is the documentation for the MEDCORD project')
     .setVersion('1.0')
-    .addTag('Backend')
     .addBearerAuth(
       {
         type: 'http', scheme: 'bearer', bearerFormat: 'JWT'

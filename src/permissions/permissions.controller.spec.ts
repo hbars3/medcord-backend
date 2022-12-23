@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
-import { PermissionDto } from './dto/permission.dto';
+import { PermissionDto } from './dto/permissionDto.dto';
 import { Permission } from './entities/permissions.entity';
 import { PermissionsController } from './permissions.controller';
 import { PermissionsService } from './permissions.service';

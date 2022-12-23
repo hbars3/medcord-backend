@@ -31,7 +31,6 @@ import { MedicalRecordModule } from './medical-record/medical-record.module';
     }),
     UsersModule,
     AuthModule,
-    PermissionsModule,
     MedicalRecordModule
   ],
   controllers: [AppController],
