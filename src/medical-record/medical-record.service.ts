@@ -11,12 +11,10 @@ export class MedicalRecordService {
     private medicalRecordsRepository: Repository<MedicalRecord>,
   ) {}
 
-  async create(body: MedicalRecordRegisterDto) {
+  async create(body: MedicalRecordRegisterDto): Promise<MedicalRecord> {
     const newMedicalRecord = this.medicalRecordsRepository.create(body);
     await this.medicalRecordsRepository.save(newMedicalRecord);
-    return {
-      medicalRecord: newMedicalRecord,
-    };
+    return newMedicalRecord;
   }
 
   async getMedicalRecords(): Promise<MedicalRecord[]> {
@@ -28,5 +26,10 @@ export class MedicalRecordService {
     const medicalRecord: MedicalRecord = await this.medicalRecordsRepository.findOne({
       where: { firstName: Like(`%${firstName}%`), lastName: Like(`%${lastName}%`) }});
       return medicalRecord;
+  }
+
+  async getById(id: string): Promise<MedicalRecord> {
+    const medicalRecord: MedicalRecord = await this.medicalRecordsRepository.findOne(id);
+    return medicalRecord;
   }
 }

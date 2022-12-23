@@ -7,6 +7,7 @@ import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { PermissionsModule } from './permissions/permissions.module';
 import { MedicalRecordModule } from './medical-record/medical-record.module';
+import { AppointmentModule } from './appointment/appointment.module';
 
 @Module({
   imports: [

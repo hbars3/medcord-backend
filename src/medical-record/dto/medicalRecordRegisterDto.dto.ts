@@ -22,10 +22,10 @@ export class MedicalRecordRegisterDto {
 
   @MinLength(0)
   @MaxLength(255)
-  @IsIn(['Peruvian', 'Venezuelan', 'Other'])
+  @IsIn(['Peruano', 'Venezolano', 'Otro'])
   nationality: string;
 
-  @IsIn(['Male', 'Female', 'Other'])
+  @IsIn(['Hombre', 'Mujer', 'Otro'])
   gender: string;
 
   @MinLength(0)
