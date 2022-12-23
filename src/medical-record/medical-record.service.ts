@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Like, Repository } from 'typeorm';
 import { MedicalRecord } from './entities/medicalRecord.entity';
 import { MedicalRecordRegisterDto } from './dto/medicalRecordRegisterDto.dto';
 
@@ -17,5 +17,16 @@ export class MedicalRecordService {
     return {
       medicalRecord: newMedicalRecord,
     };
+  }
+
+  async getMedicalRecords(): Promise<MedicalRecord[]> {
+    const medicalRecords: MedicalRecord[] = await this.medicalRecordsRepository.find();
+    return medicalRecords;
+  }
+
+  async getByPatientName(firstName: string, lastName: string): Promise<MedicalRecord> {
+    const medicalRecord: MedicalRecord = await this.medicalRecordsRepository.findOne({
+      where: { firstName: Like(`%${firstName}%`), lastName: Like(`%${lastName}%`) }});
+      return medicalRecord;
   }
 }

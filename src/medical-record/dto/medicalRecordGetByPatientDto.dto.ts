@@ -1,12 +1,11 @@
 import { MaxLength, MinLength } from "class-validator"
 
-export abstract class BaseUserDto {
+export class MedicalRecordGetByPatientDto {
+    @MinLength(0)
+    @MaxLength(255)
+    firstName: string
 
     @MinLength(0)
     @MaxLength(255)
-    email: string
-
-    @MinLength(0)
-    @MaxLength(255)
-    password: string
+    lastName: string
 }

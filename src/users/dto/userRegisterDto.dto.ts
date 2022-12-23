@@ -1,7 +1,13 @@
 import { IsIn, MaxLength, MinLength } from "class-validator"
-import { BaseUserDto } from "./baseUserDto"
 
-export class UserRegisterDto extends BaseUserDto {
+export class UserRegisterDto {
+    @MinLength(0)
+    @MaxLength(255)
+    email: string
+
+    @MinLength(0)
+    @MaxLength(255)
+    password: string
  
     @MinLength(0)
     @MaxLength(255)
@@ -13,6 +19,7 @@ export class UserRegisterDto extends BaseUserDto {
 
     @MinLength(0)
     @MaxLength(255)
+    @IsIn(["Hombre", "Mujer", "Otro"])
     gender: string
 
     @MinLength(0)

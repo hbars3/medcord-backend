@@ -54,7 +54,7 @@ export class UsersController {
     try {
       if (!(await this.usersService.isValid(body.email, body.password))) {
         return res.status(HttpStatus.BAD_REQUEST).json({
-          msg: 'Usuario no registrado',
+          msg: 'Usuario no registrado'
         });
       }
 
@@ -73,13 +73,13 @@ export class UsersController {
     }
   }
 
-  //Test endpoint
-  @UseGuards(JwtAuthGuard)
-  @ApiBearerAuth('access-token')
-  @Get('profile')
-  getProfile(@Request() req) {
-    return req.user;
-  }
+  // Test endpoint
+  // @UseGuards(JwtAuthGuard)
+  // @ApiBearerAuth('access-token')
+  // @Get('profile')
+  // getProfile(@Request() req) {
+  //   return req.user;
+  // }
 
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth('access-token')
@@ -108,6 +108,23 @@ export class UsersController {
       return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
         msg: 'No se pudo actualizar al usuario',
         error,
+      });
+    }
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth('access-token')
+  @Get()
+  async getUsers(
+    @Res() res: Response
+  ) {
+    try {
+      const users: User[] = await this.usersService.getUsers();
+      return res.status(HttpStatus.OK).json({users});
+    } catch (error) {
+      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+        msg: 'No se pudo obtener los usuarios',
+        error
       });
     }
   }

@@ -84,6 +84,13 @@ export class UsersService {
     return user;
   }
 
+  async getUsers(): Promise<User[]> {
+    const users: User[] = await this.usersRepository.find({
+      select: ["id", "name", "lastname", "dni", "email", "gender", "role", "telephone"]
+  });
+    return users;
+  }
+
   async encryptPassword(password: string): Promise<string> {
     const salt = await bcrypt.genSalt();
     return bcrypt.hash(password, salt);
