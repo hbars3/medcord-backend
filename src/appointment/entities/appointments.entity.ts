@@ -1,5 +1,5 @@
 import { User } from '../../users/entities/users.entity';
-import {Entity, Column, PrimaryGeneratedColumn, JoinColumn, ManyToOne} from 'typeorm'
+import { Entity, Column, PrimaryGeneratedColumn, JoinColumn, ManyToOne } from 'typeorm'
 import { MedicalRecord } from '../../medical-record/entities/medicalRecord.entity';
 
 @Entity("appointments")

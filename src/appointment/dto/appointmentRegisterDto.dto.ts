@@ -1,5 +1,5 @@
-import { Transform, Type } from 'class-transformer';
-import { IsDate, IsIn, IsInt, IsNumber, MaxLength, MinLength } from 'class-validator';
+import { Type } from 'class-transformer';
+import { IsDate, IsIn, IsInt, MaxLength, MinLength } from 'class-validator';
 
 export class AppointmentRegisterDto {
   @MinLength(0)

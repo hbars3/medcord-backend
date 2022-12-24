@@ -1,5 +1,5 @@
-import { Transform, Type } from 'class-transformer';
-import { IsNumber, MaxLength, MinLength, IsInt } from 'class-validator';
+import { Type } from 'class-transformer';
+import { IsInt } from 'class-validator';
 
 export class AppointmentGetByMedicalRecordDto {
   @IsInt()
