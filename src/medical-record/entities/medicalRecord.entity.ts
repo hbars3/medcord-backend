@@ -1,4 +1,4 @@
-import { Appointment } from 'src/appointment/entities/appointments.entity';
+import { Appointment } from '../../appointment/entities/appointments.entity';
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 
 @Entity('medical_records')

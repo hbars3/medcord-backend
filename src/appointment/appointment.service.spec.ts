@@ -40,7 +40,7 @@ describe('AppointmentService', () => {
   const user = new User();
   const medicalRecord = new MedicalRecord();
   const doctorEmail = 'doctor@abc.com';
-  const doctorId = '1';
+  const doctorId = 1;
   const medicalRecordId = 1;
 
   beforeEach(async () => {
