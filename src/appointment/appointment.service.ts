@@ -81,7 +81,7 @@ export class AppointmentService {
     }
 
     if (body.diagnostic != undefined) {
-      updateEntity["password"] = body.diagnostic;
+      updateEntity["diagnostic"] = body.diagnostic;
     }
 
     if (body.medicines != undefined) {
