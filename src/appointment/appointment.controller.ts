@@ -1,7 +1,7 @@
 import { Body, Controller, Get, HttpStatus, Post, Put, Query, Res, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { AppointmentRegisterDto } from './dto/appointmentRegisterDto.dto';
 import { AppointmentService } from './appointment.service';
 import { AppointmentGetByDoctorAndMedicalRecordDto } from './dto/appointmentGetByDoctorAndMedicalRecordDto.dto';

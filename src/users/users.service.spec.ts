@@ -14,12 +14,14 @@ describe('UserService', () => {
   const userRegisterDto = new UserRegisterDto();
   const userUpdateDto = new UserUpdateDto();
   const user = new User();
+  const users = [user];
   const email = 'example@xyz.com';
   const password = process.env.TEST_PASSWORD;
   const telephone = '1234567';
 
   const mockRepository = () => ({
     create: jest.fn(),
+    find: jest.fn(),
     findOne: jest.fn(),
     save: jest.fn(),
     update: jest.fn(),
@@ -112,6 +114,12 @@ describe('UserService', () => {
     jest.spyOn(userService, 'getByEmail').mockResolvedValue(user);
     expect(await userService.update(email, userUpdateDto)).toEqual(user);
   });
+  it('Should return information of the all users', async () => {
+    userRepository.find.mockResolvedValue(users);
+    expect(await userService.getUsers()).toEqual(users);
+    expect(userRepository.find).toHaveBeenCalled();
+  });
+
   it('Should return that the user was updated successfully with any changes', async () => {
     userUpdateDto.email = email;
     userUpdateDto.password = password;
@@ -119,8 +127,15 @@ describe('UserService', () => {
     userRepository.update.mockReturnThis();
     jest.spyOn(userService, 'getByEmail').mockResolvedValue(user);
     expect(await userService.update(email, userUpdateDto)).toEqual(user);
+    expect(userRepository.update).toHaveBeenCalled();
   });
-  
+
+  it('Should return that it retrieved the doctors', async () => {
+    userRepository.find.mockResolvedValue(users);
+    expect(await userService.getDoctors()).toEqual(users);
+    expect(userRepository.find).toHaveBeenCalled();
+  });
+
   it('Should return that it encrypted the password', async () => {
     jest.spyOn(bcrypt, 'genSalt').mockReturnThis();
     jest.spyOn(bcrypt, 'hash').mockImplementationOnce(() => {
