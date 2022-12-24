@@ -25,11 +25,9 @@ export class AppointmentService {
 
   async isValid(doctorEmail: string, medicalRecordId: number) {
     const isValidDoctor: boolean = await this.usersService.isAlreadyRegistered(doctorEmail);
-    console.log(isValidDoctor);
     const isValidMedicalRecord: boolean = await this.medicalRecordsService.isAlreadyRegistered(medicalRecordId);
-    console.log(isValidMedicalRecord);
 
-    return isValidDoctor;
+    return isValidDoctor && isValidMedicalRecord;
   }
 
   async create(body: AppointmentRegisterDto) {
@@ -58,6 +56,17 @@ export class AppointmentService {
   ): Promise<Appointment> {
     const appointment: Appointment = await this.appointmentsRepository.findOne({
       where: { doctor: doctorId, medicalRecord: medicalRecordId },
+      relations: ['doctor', 'medicalRecord'],
+    });
+
+    return appointment;
+  }
+
+  async getByMedicalRecordId(
+    medicalRecordId: number,
+  ): Promise<Appointment[]> {
+    const appointment: Appointment[] = await this.appointmentsRepository.find({
+      where: { medicalRecord: medicalRecordId },
       relations: ['doctor', 'medicalRecord'],
     });
 

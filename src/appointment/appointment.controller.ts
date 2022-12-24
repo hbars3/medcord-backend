@@ -7,6 +7,7 @@ import { AppointmentService } from './appointment.service';
 import { AppointmentGetByDoctorAndMedicalRecordDto } from './dto/appointmentGetByDoctorAndMedicalRecordDto.dto';
 import { Appointment } from './entities/appointments.entity';
 import { AppointmentUpdateDto } from './dto/appointmentUpdateDto.dto';
+import { AppointmentGetByMedicalRecordDto } from './dto/appointmentGetByMedicalRecordDto.dto';
 
 @Controller('appointment')
 @ApiTags('Appointment Management')
@@ -52,6 +53,29 @@ export class AppointmentController {
       } catch (error) {
         return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
           msg: 'No se pudo buscar la cita',
+          error
+        });
+      }
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @ApiBearerAuth('access-token')
+    @Get('/getByMedicalRecord')
+    async getAppointmentByMedicalRecord(
+      @Res() res: Response,
+      @Query() query: AppointmentGetByMedicalRecordDto
+    ) {
+      try {
+        const appointments: Appointment[] = await this.appointmentsService.getByMedicalRecordId(query.medicalRecordId);
+        if(!appointments) {
+          return res.status(HttpStatus.BAD_REQUEST).json({
+            msg: "No se encontró ninguna cita"
+          });
+        }
+        return res.status(HttpStatus.OK).json(appointments);
+      } catch (error) {
+        return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+          msg: 'No se pudieron buscar las citas',
           error
         });
       }
