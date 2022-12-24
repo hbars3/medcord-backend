@@ -99,4 +99,8 @@ export class UsersService {
     const salt = await bcrypt.genSalt();
     return bcrypt.hash(password, salt);
   }
+
+  testFunction() {
+    return 'test';
+  }
 }
