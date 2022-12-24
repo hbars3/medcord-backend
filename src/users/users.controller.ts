@@ -128,4 +128,21 @@ export class UsersController {
       });
     }
   }
+
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth('access-token')
+  @Get('/doctors')
+  async getDoctors(
+    @Res() res: Response
+  ) {
+    try {
+      const users: User[] = await this.usersService.getDoctors();
+      return res.status(HttpStatus.OK).json({users});
+    } catch (error) {
+      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+        msg: 'No se pudo obtener los doctores',
+        error
+      });
+    }
+  }
 }
