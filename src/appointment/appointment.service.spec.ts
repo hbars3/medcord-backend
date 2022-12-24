@@ -19,6 +19,7 @@ describe('AppointmentService', () => {
 
   const mockRepository = () => ({
     create: jest.fn(),
+    find: jest.fn(),
     findOne: jest.fn(),
     save: jest.fn(),
     update: jest.fn(),
@@ -29,6 +30,7 @@ describe('AppointmentService', () => {
   >;
 
   const appointment = new Appointment();
+  const appointements = [appointment];
   const appointmentRegisterDto = new AppointmentRegisterDto();
   const appointmentRecordDto = new AppointmentGetByDoctorAndMedicalRecordDto();
   const appointmentUpdateDtoWithoutChanges = new AppointmentUpdateDto();
@@ -116,6 +118,14 @@ describe('AppointmentService', () => {
       ),
     ).toEqual(appointment);
     expect(appointmentRepository.findOne).toBeCalledTimes(1);
+  });
+
+  it('Should return that it retrieved appointment by medical record', async () => {
+    appointmentRepository.find.mockReturnValue(appointements);
+    expect(
+      await appointmentService.getByMedicalRecordId(medicalRecordId),
+    ).toEqual(appointements);
+    expect(appointmentRepository.find).toBeCalledTimes(1);
   });
 
   it('Should return that it updated the appointment without changes', async () => {
