@@ -6,6 +6,7 @@ import { MedicalRecordRegisterDto } from './dto/medicalRecordRegisterDto.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { MedicalRecord } from './entities/medicalRecord.entity';
 import { MedicalRecordGetByPatientDto } from './dto/medicalRecordGetByPatientDto.dto';
+import { MedicalRecordGetByIdDto } from './dto/medicalRecordGetByIdDto.dto';
 
 @Controller('medical-records')
 @ApiTags('Medical Records Management')
@@ -53,6 +54,29 @@ export class MedicalRecordController {
     ) {
       try {
         const medicalRecord: MedicalRecord = await this.medicalRecordsService.getByPatientName(query.firstName, query.lastName);
+        if(!medicalRecord) {
+          return res.status(HttpStatus.BAD_REQUEST).json({
+            msg: "No se encontró ninguna historia medica"
+          });
+        }
+        return res.status(HttpStatus.OK).json(medicalRecord);
+      } catch (error) {
+        return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+          msg: 'No se pudo crear la historia medica',
+          error
+        });
+      }
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @ApiBearerAuth('access-token')
+    @Get('/getById')
+    async getByID(
+      @Res() res: Response,
+      @Query() query: MedicalRecordGetByIdDto
+    ) {
+      try {
+        const medicalRecord: MedicalRecord = await this.medicalRecordsService.getById(query.medicalRecordId);
         if(!medicalRecord) {
           return res.status(HttpStatus.BAD_REQUEST).json({
             msg: "No se encontró ninguna historia medica"
