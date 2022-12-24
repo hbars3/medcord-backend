@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import * as mocks from 'node-mocks-http';
 import { MedicalRecordController } from './medical-record.controller';
 import { MedicalRecordService } from './medical-record.service';
+import { MedicalRecordGetByIdDto } from './dto/medicalRecordGetByIdDto.dto';
 import { MedicalRecordGetByPatientDto } from './dto/medicalRecordGetByPatientDto.dto';
 import { MedicalRecordRegisterDto } from './dto/medicalRecordRegisterDto.dto';
 import { MedicalRecord } from './entities/medicalRecord.entity';
@@ -11,12 +12,15 @@ describe('MedicalRecordController', () => {
   let medicalRecordController: MedicalRecordController;
   const mockMedicalRecordService = {
     create: jest.fn(),
-    getMedicalRecords: jest.fn(),
+    getById: jest.fn(),
     getByPatientName: jest.fn(),
+    getMedicalRecords: jest.fn(),
+    
   };
   const res = mocks.createResponse();
   const medicalRecord = new MedicalRecord();
   const medicalRecords = [medicalRecord];
+  const medicalRecordGetByIdDto = new MedicalRecordGetByIdDto();
   const medicalRecordRegisterDto = new MedicalRecordRegisterDto();
   const medicalRecordGetByPatientDto = new MedicalRecordGetByPatientDto();
   beforeEach(async () => {
@@ -119,5 +123,43 @@ describe('MedicalRecordController', () => {
       );
     expect(response.statusCode).toEqual(500);
     expect(mockMedicalRecordService.getByPatientName).toBeCalledTimes(3);
+  });
+
+  it('Should ensure the JwtAuthGuard is applied to the getByID method', async () => {
+    const getByIDGuard = Reflect.getMetadata(
+      '__guards__',
+      MedicalRecordController.prototype.getByID,
+    );
+    expect(new getByIDGuard[0]()).toBeInstanceOf(JwtAuthGuard);
+  });
+  it('Should return that it found medical record by id', async () => {
+    mockMedicalRecordService.getById.mockReturnValue(medicalRecord);
+    const response =
+      await medicalRecordController.getByID(
+        res,
+        medicalRecordGetByIdDto,
+      );
+    expect(response.statusCode).toEqual(200);
+    expect(mockMedicalRecordService.getById).toBeCalledTimes(1);
+  });
+  it('Should return that it did not find medical record by id', async () => {
+    mockMedicalRecordService.getById.mockReturnValue(undefined);
+    const response =
+      await medicalRecordController.getByID(
+        res,
+        medicalRecordGetByIdDto,
+      );
+    expect(response.statusCode).toEqual(400);
+    expect(mockMedicalRecordService.getById).toBeCalledTimes(2);
+  });
+  it('Should return that the getByID method failed', async () => {
+    mockMedicalRecordService.getById.mockRejectedValue(new Error());
+    const response =
+      await medicalRecordController.getByID(
+        res,
+        medicalRecordGetByIdDto,
+      );
+    expect(response.statusCode).toEqual(500);
+    expect(mockMedicalRecordService.getById).toBeCalledTimes(3);
   });
 });

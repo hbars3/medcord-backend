@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import * as mocks from 'node-mocks-http';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { AppointmentGetByDoctorAndMedicalRecordDto } from './dto/appointmentGetByDoctorAndMedicalRecordDto.dto';
+import { AppointmentGetByMedicalRecordDto } from './dto/appointmentGetByMedicalRecordDto.dto';
 import { AppointmentRegisterDto } from './dto/appointmentRegisterDto.dto';
 import { AppointmentUpdateDto } from './dto/appointmentUpdateDto.dto';
 import { Appointment } from './entities/appointments.entity';
@@ -14,11 +15,15 @@ describe('AppointmentController', () => {
     create: jest.fn(),
     isValid: jest.fn(),
     getByDoctorAndMedicalRecordIds: jest.fn(),
+    getByMedicalRecordId: jest.fn(),
     update: jest.fn(),
   };
   const res = mocks.createResponse();
   const appointment = new Appointment();
+  const appointments = [appointment];
   const appointmentRegisterDto = new AppointmentRegisterDto();
+  const appointmentGetByMedicalRecordDto =
+    new AppointmentGetByMedicalRecordDto();
   const appointmentRecordDto = new AppointmentGetByDoctorAndMedicalRecordDto();
   const appointmentUpdateDto = new AppointmentUpdateDto();
   beforeEach(async () => {
@@ -126,6 +131,43 @@ describe('AppointmentController', () => {
     ).toBeCalledTimes(3);
   });
 
+  it('Should ensure the JwtAuthGuard is applied to the getAppointmentByMedicalRecord method', async () => {
+    const getAppointmentByMedicalRecordGuard = Reflect.getMetadata(
+      '__guards__',
+      AppointmentController.prototype.getAppointmentByMedicalRecord,
+    );
+    expect(new getAppointmentByMedicalRecordGuard[0]()).toBeInstanceOf(
+      JwtAuthGuard,
+    );
+  });
+  it('Should return that it retrieved the appointment by medical record', async () => {
+    mockAppointmentService.getByMedicalRecordId.mockReturnValue(appointments);
+    const response = await appointmentController.getAppointmentByMedicalRecord(
+      res,
+      appointmentGetByMedicalRecordDto,
+    );
+    expect(response.statusCode).toEqual(200);
+    expect(mockAppointmentService.getByMedicalRecordId).toBeCalledTimes(1);
+  });
+  it('Should return that it could not retrieved the appointment by medical record', async () => {
+    mockAppointmentService.getByMedicalRecordId.mockReturnValue(undefined);
+    const response = await appointmentController.getAppointmentByMedicalRecord(
+      res,
+      appointmentGetByMedicalRecordDto,
+    );
+    expect(response.statusCode).toEqual(400);
+    expect(mockAppointmentService.getByMedicalRecordId).toBeCalledTimes(2);
+  });
+  it('Should return that the getAppointmentByMedicalRecord method failed', async () => {
+    mockAppointmentService.getByMedicalRecordId.mockRejectedValue(new Error());
+    const response = await appointmentController.getAppointmentByMedicalRecord(
+      res,
+      appointmentGetByMedicalRecordDto,
+    );
+    expect(response.statusCode).toEqual(500);
+    expect(mockAppointmentService.getByMedicalRecordId).toBeCalledTimes(3);
+  });
+
   it('Should ensure the JwtAuthGuard is applied to the update method', async () => {
     const updateGuard = Reflect.getMetadata(
       '__guards__',
@@ -144,7 +186,9 @@ describe('AppointmentController', () => {
       appointmentUpdateDto,
     );
     expect(response.statusCode).toEqual(200);
-    expect(mockAppointmentService.getByDoctorAndMedicalRecordIds).toBeCalledTimes(4);
+    expect(
+      mockAppointmentService.getByDoctorAndMedicalRecordIds,
+    ).toBeCalledTimes(4);
     expect(mockAppointmentService.update).toBeCalledTimes(1);
   });
   it('Should return that it did not updated the appointment', async () => {
@@ -157,7 +201,9 @@ describe('AppointmentController', () => {
       appointmentUpdateDto,
     );
     expect(response.statusCode).toEqual(400);
-    expect(mockAppointmentService.getByDoctorAndMedicalRecordIds).toBeCalledTimes(5);
+    expect(
+      mockAppointmentService.getByDoctorAndMedicalRecordIds,
+    ).toBeCalledTimes(5);
   });
   it('Should return that the update method failed', async () => {
     mockAppointmentService.getByDoctorAndMedicalRecordIds.mockRejectedValue(
