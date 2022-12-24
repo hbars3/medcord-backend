@@ -32,7 +32,8 @@ import { AppointmentModule } from './appointment/appointment.module';
     }),
     UsersModule,
     AuthModule,
-    MedicalRecordModule
+    MedicalRecordModule,
+    AppointmentModule
   ],
   controllers: [AppController],
   providers: [AppService],

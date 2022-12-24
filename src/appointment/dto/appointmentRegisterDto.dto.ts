@@ -1,9 +1,10 @@
 import { Type } from 'class-transformer';
-import { IsDate, MaxLength, MinLength } from 'class-validator';
+import { IsDate, IsIn, MaxLength, MinLength } from 'class-validator';
 
 export class AppointmentRegisterDto {
   @MinLength(0)
   @MaxLength(255)
+  @IsIn(['Medicina General', 'Oftalmologia', 'Pediatria'])
   readonly specialty: string;
 
   @MinLength(0)

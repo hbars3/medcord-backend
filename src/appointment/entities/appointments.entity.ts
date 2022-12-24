@@ -9,7 +9,7 @@ export class Appointment {
     id?: number
 
     @Column({
-        default: ''
+        enum: ['Medicina General', 'Oftalmologia', 'Pediatria'],
     })
     specialty: string;
 
