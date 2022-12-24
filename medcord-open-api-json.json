@@ -1,0 +1,368 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/": {
+      "get": {
+        "operationId": "AppController_getHello",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": { "schema": { "type": "string" } }
+            }
+          }
+        },
+        "tags": ["Index"]
+      }
+    },
+    "/users/register": {
+      "post": {
+        "operationId": "UsersController_register",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/UserRegisterDto" }
+            }
+          }
+        },
+        "responses": { "201": { "description": "" } },
+        "tags": ["User Management"]
+      }
+    },
+    "/users/login": {
+      "post": {
+        "operationId": "UsersController_login",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/UserLoginDto" }
+            }
+          }
+        },
+        "responses": { "201": { "description": "" } },
+        "tags": ["User Management"]
+      }
+    },
+    "/users": {
+      "put": {
+        "operationId": "UsersController_updateUser",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/UserUpdateDto" }
+            }
+          }
+        },
+        "responses": { "200": { "description": "" } },
+        "tags": ["User Management"],
+        "security": [{ "access-token": [] }]
+      },
+      "get": {
+        "operationId": "UsersController_getUsers",
+        "parameters": [],
+        "responses": { "200": { "description": "" } },
+        "tags": ["User Management"],
+        "security": [{ "access-token": [] }]
+      }
+    },
+    "/users/doctors": {
+      "get": {
+        "operationId": "UsersController_getDoctors",
+        "parameters": [],
+        "responses": { "200": { "description": "" } },
+        "tags": ["User Management"],
+        "security": [{ "access-token": [] }]
+      }
+    },
+    "/medical-records/create": {
+      "post": {
+        "operationId": "MedicalRecordController_register",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MedicalRecordRegisterDto"
+              }
+            }
+          }
+        },
+        "responses": { "201": { "description": "" } },
+        "tags": ["Medical Records Management"],
+        "security": [{ "access-token": [] }]
+      }
+    },
+    "/medical-records": {
+      "get": {
+        "operationId": "MedicalRecordController_getMedicalRecords",
+        "parameters": [],
+        "responses": { "200": { "description": "" } },
+        "tags": ["Medical Records Management"],
+        "security": [{ "access-token": [] }]
+      }
+    },
+    "/medical-records/getByPatientName": {
+      "get": {
+        "operationId": "MedicalRecordController_getMedicalRecordsByPatientName",
+        "parameters": [
+          {
+            "name": "firstName",
+            "required": true,
+            "in": "query",
+            "schema": { "minLength": 0, "maxLength": 255, "type": "string" }
+          },
+          {
+            "name": "lastName",
+            "required": true,
+            "in": "query",
+            "schema": { "minLength": 0, "maxLength": 255, "type": "string" }
+          }
+        ],
+        "responses": { "200": { "description": "" } },
+        "tags": ["Medical Records Management"],
+        "security": [{ "access-token": [] }]
+      }
+    },
+    "/medical-records/getById": {
+      "get": {
+        "operationId": "MedicalRecordController_getByID",
+        "parameters": [
+          {
+            "name": "medicalRecordId",
+            "required": true,
+            "in": "query",
+            "schema": { "type": "number" }
+          }
+        ],
+        "responses": { "200": { "description": "" } },
+        "tags": ["Medical Records Management"],
+        "security": [{ "access-token": [] }]
+      }
+    },
+    "/appointment/create": {
+      "post": {
+        "operationId": "AppointmentController_register",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AppointmentRegisterDto"
+              }
+            }
+          }
+        },
+        "responses": { "201": { "description": "" } },
+        "tags": ["Appointment Management"],
+        "security": [{ "access-token": [] }]
+      }
+    },
+    "/appointment/getByDoctorAndMedicalRecordIds": {
+      "get": {
+        "operationId": "AppointmentController_getAppointmentByDoctorAndMedicalRecordIds",
+        "parameters": [
+          {
+            "name": "doctorId",
+            "required": true,
+            "in": "query",
+            "schema": { "type": "number" }
+          },
+          {
+            "name": "medicalRecordId",
+            "required": true,
+            "in": "query",
+            "schema": { "type": "number" }
+          }
+        ],
+        "responses": { "200": { "description": "" } },
+        "tags": ["Appointment Management"],
+        "security": [{ "access-token": [] }]
+      }
+    },
+    "/appointment/getByMedicalRecord": {
+      "get": {
+        "operationId": "AppointmentController_getAppointmentByMedicalRecord",
+        "parameters": [
+          {
+            "name": "medicalRecordId",
+            "required": true,
+            "in": "query",
+            "schema": { "type": "number" }
+          }
+        ],
+        "responses": { "200": { "description": "" } },
+        "tags": ["Appointment Management"],
+        "security": [{ "access-token": [] }]
+      }
+    },
+    "/appointment": {
+      "put": {
+        "operationId": "AppointmentController_update",
+        "parameters": [
+          {
+            "name": "doctorId",
+            "required": true,
+            "in": "query",
+            "schema": { "type": "number" }
+          },
+          {
+            "name": "medicalRecordId",
+            "required": true,
+            "in": "query",
+            "schema": { "type": "number" }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/AppointmentUpdateDto" }
+            }
+          }
+        },
+        "responses": { "200": { "description": "" } },
+        "tags": ["Appointment Management"],
+        "security": [{ "access-token": [] }]
+      }
+    }
+  },
+  "info": {
+    "title": "MEDCORD Apis Open API",
+    "description": "This is the documentation for the MEDCORD project",
+    "version": "1.0",
+    "contact": {}
+  },
+  "tags": [],
+  "servers": [],
+  "components": {
+    "securitySchemes": {
+      "access-token": {
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "type": "http"
+      }
+    },
+    "schemas": {
+      "UserRegisterDto": {
+        "type": "object",
+        "properties": {
+          "email": { "type": "string", "minLength": 0, "maxLength": 255 },
+          "password": { "type": "string", "minLength": 0, "maxLength": 255 },
+          "name": { "type": "string", "minLength": 0, "maxLength": 255 },
+          "lastname": { "type": "string", "minLength": 0, "maxLength": 255 },
+          "gender": {
+            "type": "string",
+            "enum": ["Hombre", "Mujer", "Otro"],
+            "minLength": 0,
+            "maxLength": 255
+          },
+          "dni": { "type": "string", "minLength": 0, "maxLength": 255 },
+          "telephone": { "type": "string", "minLength": 0, "maxLength": 255 },
+          "role": {
+            "type": "string",
+            "enum": ["MEDIC", "NURSE", "NONE"],
+            "minLength": 0,
+            "maxLength": 255
+          }
+        },
+        "required": [
+          "email",
+          "password",
+          "name",
+          "lastname",
+          "gender",
+          "dni",
+          "telephone",
+          "role"
+        ]
+      },
+      "UserLoginDto": {
+        "type": "object",
+        "properties": {
+          "email": { "type": "string", "minLength": 0, "maxLength": 255 },
+          "password": { "type": "string", "minLength": 0, "maxLength": 255 }
+        },
+        "required": ["email", "password"]
+      },
+      "UserUpdateDto": {
+        "type": "object",
+        "properties": {
+          "email": { "type": "string", "minLength": 0, "maxLength": 255 },
+          "password": { "type": "string", "minLength": 0, "maxLength": 255 },
+          "telephone": { "type": "string", "minLength": 0, "maxLength": 255 }
+        },
+        "required": ["email", "password", "telephone"]
+      },
+      "MedicalRecordRegisterDto": {
+        "type": "object",
+        "properties": {
+          "firstName": { "type": "string", "minLength": 0, "maxLength": 255 },
+          "lastName": { "type": "string", "minLength": 0, "maxLength": 255 },
+          "dni": { "type": "string", "minLength": 0, "maxLength": 12 },
+          "birthplace": { "type": "string", "minLength": 0, "maxLength": 255 },
+          "birthdate": { "format": "date-time", "type": "string" },
+          "nationality": {
+            "type": "string",
+            "enum": ["Peruano", "Venezolano", "Otro"],
+            "minLength": 0,
+            "maxLength": 255
+          },
+          "gender": { "type": "string", "enum": ["Hombre", "Mujer", "Otro"] },
+          "address": { "type": "string", "minLength": 0, "maxLength": 255 },
+          "telephone": { "type": "string", "minLength": 0, "maxLength": 255 }
+        },
+        "required": [
+          "firstName",
+          "lastName",
+          "dni",
+          "birthplace",
+          "birthdate",
+          "nationality",
+          "gender",
+          "address",
+          "telephone"
+        ]
+      },
+      "AppointmentRegisterDto": {
+        "type": "object",
+        "properties": {
+          "specialty": {
+            "type": "string",
+            "enum": ["Medicina General", "Oftalmologia", "Pediatria"],
+            "minLength": 0,
+            "maxLength": 255
+          },
+          "doctorEmail": { "type": "string", "minLength": 0, "maxLength": 255 },
+          "medicalRecordId": { "type": "number" },
+          "date": { "format": "date-time", "type": "string" },
+          "hour": { "format": "date-time", "type": "string" }
+        },
+        "required": [
+          "specialty",
+          "doctorEmail",
+          "medicalRecordId",
+          "date",
+          "hour"
+        ]
+      },
+      "AppointmentUpdateDto": {
+        "type": "object",
+        "properties": {
+          "analysis": { "type": "string", "minLength": 0, "maxLength": 255 },
+          "diagnostic": { "type": "string", "minLength": 0, "maxLength": 255 },
+          "medicines": { "type": "string", "minLength": 0, "maxLength": 255 }
+        },
+        "required": ["analysis", "diagnostic", "medicines"]
+      }
+    }
+  }
+}
