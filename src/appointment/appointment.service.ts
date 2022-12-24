@@ -7,38 +7,75 @@ import { UsersService } from '../users/users.service';
 import { MedicalRecord } from '../medical-record/entities/medicalRecord.entity';
 import { User } from 'src/users/entities/users.entity';
 import { MedicalRecordService } from '../medical-record/medical-record.service';
+import { AppointmentGetByDoctorAndMedicalRecordDto } from './dto/appointmentGetByDoctorAndMedicalRecordDto.dto';
+import { AppointmentUpdateDto } from './dto/appointmentUpdateDto.dto';
 
 @Injectable()
 export class AppointmentService {
-    @Inject(UsersService)
-    private usersService: UsersService;
+  @Inject(UsersService)
+  private usersService: UsersService;
 
-    @Inject(MedicalRecord)
-    private medicalRecordsService: MedicalRecordService;
+  @Inject(MedicalRecordService)
+  private medicalRecordsService: MedicalRecordService;
 
-    constructor(
-        @InjectRepository(Appointment)
-        private readonly appointmentsRepository: Repository<Appointment>,
-    ) {}
+  constructor(
+    @InjectRepository(Appointment)
+    private readonly appointmentsRepository: Repository<Appointment>,
+  ) {}
 
-    async create(body: AppointmentRegisterDto) {
+  async create(body: AppointmentRegisterDto) {
+    const doctor: User = await this.usersService.getByEmail(body.doctorEmail);
+    const medicalRecord: MedicalRecord =
+      await this.medicalRecordsService.getById(body.medicalRecordId);
 
-        const doctor: User = await this.usersService.getByEmail(body.doctorEmail);
-        const medicalRecord: MedicalRecord = await this.medicalRecordsService.getById(body.medicalRecordId);
+    let newAppointment: Appointment = {
+      specialty: body.specialty,
+      doctor,
+      medicalRecord,
+      date: body.date,
+      hour: body.hour,
+    };
 
-        let appointment: Appointment = {
-            specialty: body.specialty,
-            doctor,
-            medicalRecord,
-            date: body.date,
-            hour: body.hour
-        } 
+    const appointment = this.appointmentsRepository.create(newAppointment);
+    await this.appointmentsRepository.save(appointment);
+    return {
+      appointment,
+    };
+  }
 
-        const newAppointment = this.appointmentsRepository.create(appointment);
-        await this.appointmentsRepository.save(newAppointment);
-        return {
-            newAppointment
-        };
-      }
-    
+  async getByDoctorAndMedicalRecordIds(
+    doctorId: string,
+    medicalRecordId: string,
+  ): Promise<Appointment> {
+    const appointment: Appointment = await this.appointmentsRepository.findOne({
+      where: { doctor: doctorId, medicalRecord: medicalRecordId },
+      relations: ['doctor', 'medicalRecord'],
+    });
+
+    return appointment;
+  }
+
+  async update(appointmentId: number, query: AppointmentGetByDoctorAndMedicalRecordDto, body: AppointmentUpdateDto): Promise<Appointment> {
+    const updateEntity = {}
+
+    if (body.analysis != undefined) {
+      updateEntity["analysis"] = body.analysis;
+    }
+
+    if (body.diagnostic != undefined) {
+      updateEntity["diagnostic"] = body.diagnostic;
+    }
+
+    if (body.medicines != undefined) {
+      updateEntity["medicines"] = body.medicines;
+    }
+
+    await this.appointmentsRepository.update({
+      id: appointmentId
+    },
+    updateEntity);
+
+    const appointement = await this.getByDoctorAndMedicalRecordIds(query.doctorId, query.medicalRecordId);
+    return appointement;
+  }
 }
