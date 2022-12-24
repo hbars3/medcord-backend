@@ -57,10 +57,6 @@ export class UsersService {
   }
 
   async update(email: string, body: UserUpdateDto): Promise<User> {
-
-    console.log(email);
-    console.log(body);
-
     const updateEntity = {}
 
     if (body.email != undefined) {

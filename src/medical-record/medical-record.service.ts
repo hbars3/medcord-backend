@@ -37,8 +37,6 @@ export class MedicalRecordService {
     const medicalRecord = await this.medicalRecordsRepository.findOne(
       id, 
       { select: ['id'] });
-
-    console.log(!!medicalRecord);
     return !!medicalRecord;
   }
 }
