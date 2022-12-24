@@ -1,5 +1,5 @@
-import { Type } from 'class-transformer';
-import { IsDate, IsIn, MaxLength, MinLength } from 'class-validator';
+import { Transform, Type } from 'class-transformer';
+import { IsDate, IsIn, IsInt, IsNumber, MaxLength, MinLength } from 'class-validator';
 
 export class AppointmentRegisterDto {
   @MinLength(0)
@@ -11,9 +11,9 @@ export class AppointmentRegisterDto {
   @MaxLength(255)
   readonly doctorEmail: string;
 
-  @MinLength(0)
-  @MaxLength(255)
-  readonly medicalRecordId: string;
+  @IsInt()
+  @Type(() => Number)
+  readonly medicalRecordId: number;
 
   @Type(() => Date)
   @IsDate()

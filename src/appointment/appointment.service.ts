@@ -23,6 +23,15 @@ export class AppointmentService {
     private readonly appointmentsRepository: Repository<Appointment>,
   ) {}
 
+  async isValid(doctorEmail: string, medicalRecordId: number) {
+    const isValidDoctor: boolean = await this.usersService.isAlreadyRegistered(doctorEmail);
+    console.log(isValidDoctor);
+    const isValidMedicalRecord: boolean = await this.medicalRecordsService.isAlreadyRegistered(medicalRecordId);
+    console.log(isValidMedicalRecord);
+
+    return isValidDoctor;
+  }
+
   async create(body: AppointmentRegisterDto) {
     const doctor: User = await this.usersService.getByEmail(body.doctorEmail);
     const medicalRecord: MedicalRecord =
@@ -45,7 +54,7 @@ export class AppointmentService {
 
   async getByDoctorAndMedicalRecordIds(
     doctorId: string,
-    medicalRecordId: string,
+    medicalRecordId: number,
   ): Promise<Appointment> {
     const appointment: Appointment = await this.appointmentsRepository.findOne({
       where: { doctor: doctorId, medicalRecord: medicalRecordId },
@@ -63,7 +72,7 @@ export class AppointmentService {
     }
 
     if (body.diagnostic != undefined) {
-      updateEntity["diagnostic"] = body.diagnostic;
+      updateEntity["password"] = body.diagnostic;
     }
 
     if (body.medicines != undefined) {

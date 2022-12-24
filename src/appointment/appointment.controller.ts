@@ -18,6 +18,12 @@ export class AppointmentController {
     @Post('/create')
     async register(@Res() res: Response, @Body() body: AppointmentRegisterDto) {
       try {
+        if (!(await this.appointmentsService.isValid(body.doctorEmail, body.medicalRecordId))) {
+          return res.status(HttpStatus.BAD_REQUEST).json({
+            msg: 'Doctor o Historia medica no valida'
+          });
+        }
+
         const msg = await this.appointmentsService.create(body);
         return res.status(HttpStatus.OK).json(msg);
       } catch (error) {

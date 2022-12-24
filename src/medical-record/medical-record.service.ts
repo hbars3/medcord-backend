@@ -28,8 +28,17 @@ export class MedicalRecordService {
       return medicalRecord;
   }
 
-  async getById(id: string): Promise<MedicalRecord> {
+  async getById(id: number): Promise<MedicalRecord> {
     const medicalRecord: MedicalRecord = await this.medicalRecordsRepository.findOne(id);
     return medicalRecord;
+  }
+
+  async isAlreadyRegistered(id: number) {
+    const medicalRecord = await this.medicalRecordsRepository.findOne(
+      id, 
+      { select: ['id'] });
+
+    console.log(!!medicalRecord);
+    return !!medicalRecord;
   }
 }
