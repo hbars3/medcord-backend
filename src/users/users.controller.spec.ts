@@ -13,10 +13,12 @@ describe('User Controller', () => {
   let userController: UsersController;
   let userService: UsersService;
   const mockUserService = {
-    isAlreadyRegistered: jest.fn(),
-    register: jest.fn(),
-    isValid: jest.fn(),
     getByEmail: jest.fn(),
+    getDoctors: jest.fn(),
+    getUsers: jest.fn(),
+    isAlreadyRegistered: jest.fn(),
+    isValid: jest.fn(),
+    register: jest.fn(),
     update: jest.fn(),
   };
   const mockAuthService = {
@@ -25,6 +27,7 @@ describe('User Controller', () => {
   const res = mocks.createResponse();
   const req = mocks.createRequest();
   const user = new User();
+  const users = [user];
   const userLoginDto = new UserLoginDto();
   const userRegisterDto = new UserRegisterDto();
   const userUpdateDto = new UserUpdateDto();
@@ -85,7 +88,6 @@ describe('User Controller', () => {
     mockUserService.getByEmail.mockReturnValue(user);
     mockAuthService.getJWT.mockReturnValue(token);
     const response = await userController.login(res, userLoginDto);
-    console.log(response.getHeaders());
     expect(response.statusCode).toEqual(200);
     expect(mockUserService.isValid).toBeCalledTimes(2);
     expect(mockAuthService.getJWT).toBeCalledTimes(1);
@@ -95,15 +97,6 @@ describe('User Controller', () => {
     const response = await userController.login(res, userLoginDto);
     expect(response.statusCode).toEqual(500);
     expect(mockUserService.isValid).toBeCalledTimes(3);
-  });
-
-  it('Should ensure the JwtAuthGuard is applied to the getProfile method', async () => {
-    const getUserGuard = Reflect.getMetadata('__guards__', UsersController.prototype.getProfile)
-    expect(new (getUserGuard[0])).toBeInstanceOf(JwtAuthGuard)
-  });
-  it('Should return that the getProfile method executed successfully', async () => {
-    const response = await userController.getProfile(req);
-    expect(response).toEqual(req.user);
   });
 
   it('Should ensure the JwtAuthGuard is applied to the updateUser method', async () => {
@@ -132,5 +125,39 @@ describe('User Controller', () => {
     const response = await userController.updateUser(req, res, userUpdateDto);
     expect(response.statusCode).toEqual(500);
     expect(mockUserService.isAlreadyRegistered).toBeCalledTimes(6);
+  });
+
+  it('Should ensure the JwtAuthGuard is applied to the getUsers method', async () => {
+    const getUsersGuard = Reflect.getMetadata('__guards__', UsersController.prototype.getUsers)
+    expect(new (getUsersGuard[0])).toBeInstanceOf(JwtAuthGuard)
+  });
+  it('Should return that it retrieved all the users', async () => {
+    mockUserService.getUsers.mockReturnValue(users);
+    const response = await userController.getUsers(res);
+    expect(response.statusCode).toEqual(200);
+    expect(mockUserService.getUsers).toBeCalledTimes(1);
+  });
+  it('Should return that it did not retrieve all the users', async () => {
+    mockUserService.getUsers.mockRejectedValue(new Error());
+    const response = await userController.getUsers(res);
+    expect(response.statusCode).toEqual(500);
+    expect(mockUserService.getUsers).toBeCalledTimes(2);
+  });
+
+  it('Should ensure the JwtAuthGuard is applied to the getDoctors method', async () => {
+    const getDoctorsGuard = Reflect.getMetadata('__guards__', UsersController.prototype.getDoctors)
+    expect(new (getDoctorsGuard[0])).toBeInstanceOf(JwtAuthGuard)
+  });
+  it('Should return that it retrieved all the doctors', async () => {
+    mockUserService.getDoctors.mockReturnValue(users);
+    const response = await userController.getDoctors(res);
+    expect(response.statusCode).toEqual(200);
+    expect(mockUserService.getDoctors).toBeCalledTimes(1);
+  });
+  it('Should return that it did not retrieve all the doctors', async () => {
+    mockUserService.getDoctors.mockRejectedValue(new Error());
+    const response = await userController.getDoctors(res);
+    expect(response.statusCode).toEqual(500);
+    expect(mockUserService.getDoctors).toBeCalledTimes(2);
   });
 });
