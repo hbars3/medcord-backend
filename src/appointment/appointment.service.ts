@@ -5,7 +5,7 @@ import { Repository } from 'typeorm';
 import { AppointmentRegisterDto } from './dto/appointmentRegisterDto.dto';
 import { UsersService } from '../users/users.service';
 import { MedicalRecord } from '../medical-record/entities/medicalRecord.entity';
-import { User } from 'src/users/entities/users.entity';
+import { User } from '../users/entities/users.entity';
 import { MedicalRecordService } from '../medical-record/medical-record.service';
 import { AppointmentGetByDoctorAndMedicalRecordDto } from './dto/appointmentGetByDoctorAndMedicalRecordDto.dto';
 import { AppointmentUpdateDto } from './dto/appointmentUpdateDto.dto';
