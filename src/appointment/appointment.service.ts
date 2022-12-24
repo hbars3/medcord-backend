@@ -51,7 +51,7 @@ export class AppointmentService {
   }
 
   async getByDoctorAndMedicalRecordIds(
-    doctorId: string,
+    doctorId: number,
     medicalRecordId: number,
   ): Promise<Appointment> {
     const appointment: Appointment = await this.appointmentsRepository.findOne({
