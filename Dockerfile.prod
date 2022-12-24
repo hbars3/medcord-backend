@@ -1,34 +1,28 @@
-FROM node:16.4.2-alpine3.14 As development
+FROM node:16-alpine as builder
 
-# Create app directory
-WORKDIR /usr/src/app
-COPY --chown=node:node package*.json ./
-RUN npm ci
-COPY --chown=node:node . .
+ENV NODE_ENV build
+
 USER node
-FROM node:16.4.2-alpine3.14 As build
-WORKDIR /usr/src/app
-COPY --chown=node:node package*.json ./
+WORKDIR /home/node
 
-COPY --chown=node:node --from=development /usr/src/app/node_modules ./node_modules
+COPY package*.json ./
+RUN npm ci
+
 COPY --chown=node:node . .
+RUN npm run build \
+    && npm prune --production
 
-RUN npm run build
+# ---
+
+FROM node:16-alpine
 
 ENV NODE_ENV production
 
-# Running `npm ci` removes the existing node_modules directory and passing in --only=production ensures that only the production dependencies are installed. This ensures that the node_modules directory is as optimized as possible
-RUN npm ci --only=production && npm cache clean --force
-
 USER node
+WORKDIR /home/node
 
-###################
-# PRODUCTION
-###################
+COPY --from=builder --chown=node:node /home/node/package*.json ./
+COPY --from=builder --chown=node:node /home/node/node_modules/ ./node_modules/
+COPY --from=builder --chown=node:node /home/node/build/ ./build/
 
-FROM node:16.4.2-alpine3.14 As production
-
-COPY --chown=node:node --from=build /usr/src/app/node_modules ./node_modules
-COPY --chown=node:node --from=build /usr/src/app/build ./build
-
-CMD [ "node", "build/main.js" ]
+CMD ["node", "build/main.js"]
